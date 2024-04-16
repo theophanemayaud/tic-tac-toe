@@ -11,7 +11,7 @@ signals:
     void moveReady(uint move); // emitted when player has chosen his next move
 
 public:
-    Player(char moveSymbol, bool manualPlayer);
+    Player(char moveSymbol, bool manualPlayer, uint difficulty);
 
     void startNextMove(const char* board); // call when it is the player's turn, then listen for moveReady signal
 
@@ -24,6 +24,7 @@ private:
     bool awaitingMove = false;
 
     const char* board; // TODO refactor as separate class
+    const uint difficulty;
 
     uint getBotMove() const;
 };

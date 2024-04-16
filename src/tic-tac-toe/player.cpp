@@ -3,8 +3,8 @@
 #include <QTimer>
 #include <QRandomGenerator>
 
-Player::Player(char moveSymbol, bool manualPlayer)
-    : moveSymbol(moveSymbol), manualPlayer(manualPlayer)
+Player::Player(char moveSymbol, bool manualPlayer, uint difficulty)
+    : moveSymbol(moveSymbol), manualPlayer(manualPlayer), difficulty(difficulty)
 {
 
 }
@@ -40,8 +40,21 @@ uint Player::getBotMove() const
 
     std::advance(possibleBestMove, QRandomGenerator::global()->bounded((uint)0,(uint)nbEqualBestMoves-1));
 
-    // TODO randomize based on difficulty
+    uint chosenMove = possibleBestMove->second;
 
-    return possibleBestMove->second;
+    // difficulties are from 1 to 100
+    // we make the bot choose a random move instead of the optimal move
+    // when a random number between 1 and 100 > the difficulty
+    // Thus if the difficulty is at
+    //      100 we always choose the optimal move
+    //      50 we choose the optimal move only half the time
+    //      1 we only choose randomly
+    if(QRandomGenerator::global()->bounded(1,100) > this->difficulty){
+        auto possibleRandomMove = gainOfPossibleMoves.cbegin();
+        std::advance(possibleRandomMove, QRandomGenerator::global()->bounded((uint)1,(uint)(gainOfPossibleMoves.size()-1)));
+        chosenMove = possibleRandomMove->second;
+    }
+
+    return chosenMove;
 }
 

@@ -90,8 +90,8 @@ void MainWindow::on_start_clicked()
     this->ui->stacked->setCurrentIndex(1);
 
     const bool humanPlaysFirst = this->ui->playFirst->isChecked();
-    this->player1 = new Player('X', true);
-    this->player2 = new Player('O', false);
+    this->player1 = new Player('X', true, this->ui->horizontalSlider->value()+1);
+    this->player2 = new Player('O', false, this->ui->horizontalSlider->value()+1);
     this->currentPlayer = humanPlaysFirst
         ? player1
         : player2;
