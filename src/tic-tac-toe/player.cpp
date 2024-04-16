@@ -1,5 +1,7 @@
 #include "player.h"
 
+#include <QTimer>
+
 Player::Player(char moveSymbol, bool manualPlayer)
     : moveSymbol(moveSymbol), manualPlayer(manualPlayer)
 {
@@ -9,13 +11,21 @@ Player::Player(char moveSymbol, bool manualPlayer)
 void Player::startNextMove(const char board[9])
 {
     this->board = board;
-    this->awaitingMove = true;
 
-    // TODO if auto player, get next move
+    if(this->manualPlayer)
+        return; // in manual mode we just wait until user chooses a move
+
+    // TODO auto player, get next move
+    for (uint i = 0; i < sizeof(board); ++i) {
+        if(board[i] == ' '){
+            QTimer::singleShot(1, this, [this, i](){emit this->moveReady(i);});
+            return;
+        }
+    }
 }
 
 void Player::receiveManualMove(uint move)
 {
-    if(this->manualPlayer && this->awaitingMove && this->board[move] == ' ')
-        emit this->moveReady(move);
+    if(this->manualPlayer && this->board[move] == ' ')
+        emit moveReady(move);
 }
