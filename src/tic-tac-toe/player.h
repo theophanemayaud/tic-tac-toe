@@ -13,7 +13,7 @@ signals:
 public:
     Player(char moveSymbol, bool manualPlayer);
 
-    void startNextMove(const char board[9]); // call when it is the player's turn, then listen for moveReady signal
+    void startNextMove(const char* board); // call when it is the player's turn, then listen for moveReady signal
 
     const char moveSymbol; // symbol that corresponds to the player on the board
     const bool manualPlayer; // true if player is in manual ie 'human' mode
@@ -24,6 +24,8 @@ private:
     bool awaitingMove = false;
 
     const char* board; // TODO refactor as separate class
+
+    uint getBotMove() const;
 };
 
 #endif // PLAYER_H
