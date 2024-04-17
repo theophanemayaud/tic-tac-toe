@@ -20,7 +20,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void handlePlayerMove(uint move);
+    void handlePlayerMove(Board::Location location);
 
 private slots:
     void on_horizontalSlider_valueChanged(int value);
@@ -29,15 +29,15 @@ private slots:
 
     void on_restartButton_clicked();
 
-    void on_map1_clicked() { manualMoveClicked(0); }; // TODO do this in code by connecting signals
-    void on_map2_clicked() { manualMoveClicked(1); };
-    void on_map3_clicked() { manualMoveClicked(2); };
-    void on_map4_clicked() { manualMoveClicked(3); };
-    void on_map5_clicked() { manualMoveClicked(4); };
-    void on_map6_clicked() { manualMoveClicked(5); };
-    void on_map7_clicked() { manualMoveClicked(6); };
-    void on_map8_clicked() { manualMoveClicked(7); };
-    void on_map9_clicked() { manualMoveClicked(8); };
+    void on_map1_clicked() { manualMoveClicked(Board::Location::TopLeft); }; // TODO do this in code by connecting signals
+    void on_map2_clicked() { manualMoveClicked(Board::Location::TopMiddle); };
+    void on_map3_clicked() { manualMoveClicked(Board::Location::TopRight); };
+    void on_map4_clicked() { manualMoveClicked(Board::Location::MiddleLeft); };
+    void on_map5_clicked() { manualMoveClicked(Board::Location::MiddleMiddle); };
+    void on_map6_clicked() { manualMoveClicked(Board::Location::MiddleRight); };
+    void on_map7_clicked() { manualMoveClicked(Board::Location::BottomLeft); };
+    void on_map8_clicked() { manualMoveClicked(Board::Location::BottomMiddle); };
+    void on_map9_clicked() { manualMoveClicked(Board::Location::BottomRight); };
 
 private:
     Player *player1;
@@ -47,19 +47,11 @@ private:
 
     Player *currentPlayer;
 
-    // Array of board states storing each player's symbol where they played
-    // Element indices as per tic tac toe map :
-    // 0 | 1 | 2
-    // ––––––––––
-    // 3 | 4 | 5
-    // ––––––––––
-    // 6 | 7 | 8
-    char boardStates[9] = {};
+    Board board = Board();
 
-    void manualMoveClicked(uint move);
+    void manualMoveClicked(Board::Location location);
     // updates the board and the window title depending on current state and player
-    void updateBoardDisplay(const char board[9], bool manualPlayer);
-    static bool playerWon(const char board[9], const char playerSymbol);
+    void updateBoardDisplay();
 
 private:
     Ui::MainWindow *ui;

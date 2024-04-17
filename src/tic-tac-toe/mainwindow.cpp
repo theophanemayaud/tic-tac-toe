@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->difficulty->setNum(static_cast<int>(this->board.difficulty));
+    ui->horizontalSlider->setSliderPosition(static_cast<int>(this->board.difficulty)-1);
 }
 
 MainWindow::~MainWindow()
@@ -13,15 +15,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::handlePlayerMove(uint move)
+void MainWindow::handlePlayerMove(Board::Location location)
 {
     disconnect(currentPlayer, nullptr, this, nullptr); // disconnect further calls from current player as they have made their move
-    qDebug() << "Handle move :" << move;
+    qDebug() << "Handle move :" << (int)location;
 
-    this->boardStates[move] = this->currentPlayer->moveSymbol;
+    this->board.AddMove(location, this->currentPlayer->moveSymbol);
 
-    if(playerWon(boardStates, currentPlayer->moveSymbol)){
-        updateBoardDisplay(boardStates, this->currentPlayer->manualPlayer);
+    if(this->board.HasWon(currentPlayer->moveSymbol)){
+        updateBoardDisplay();
         this->setWindowTitle(
             this->currentPlayer->manualPlayer
                 ? "You won !"
@@ -33,50 +35,31 @@ void MainWindow::handlePlayerMove(uint move)
     this->currentPlayer = currentPlayer == player1
                             ? player2
                             : player1;
-    updateBoardDisplay(this->boardStates, this->currentPlayer->manualPlayer);
+    updateBoardDisplay();
 
     QObject::connect(currentPlayer, &Player::moveReady, this, &MainWindow::handlePlayerMove);
-    currentPlayer->startNextMove(this->boardStates);
+    currentPlayer->startNextMove(this->board);
 }
 
 // ------------------------------
 // BEGIN : private functions
-void MainWindow::updateBoardDisplay(const char board[9], bool manualPlayer)
+void MainWindow::updateBoardDisplay()
 {
-    ui->map1->setText(QString(board[0]));
-    ui->map2->setText(QString(board[1]));
-    ui->map3->setText(QString(board[2]));
-    ui->map4->setText(QString(board[3]));
-    ui->map5->setText(QString(board[4]));
-    ui->map6->setText(QString(board[5]));
-    ui->map7->setText(QString(board[6]));
-    ui->map8->setText(QString(board[7]));
-    ui->map9->setText(QString(board[8]));
+    ui->map1->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::TopLeft))));
+    ui->map2->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::TopMiddle))));
+    ui->map3->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::TopRight))));
+    ui->map4->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::MiddleLeft))));
+    ui->map5->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::MiddleMiddle))));
+    ui->map6->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::MiddleRight))));
+    ui->map7->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::BottomLeft))));
+    ui->map8->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::BottomMiddle))));
+    ui->map9->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::BottomRight))));
 
     this->setWindowTitle(
-        manualPlayer
+        this->currentPlayer->manualPlayer
             ? "Your move !"
             : "Computer is thinking..."
         );
-}
-
-bool MainWindow::playerWon(const char board[9], const char playerSymbol)
-{
-    if(    // horizontal lines
-           (board[0] == playerSymbol && board[1] == playerSymbol && board[2] == playerSymbol)
-        || (board[3] == playerSymbol && board[4] == playerSymbol && board[5] == playerSymbol)
-        || (board[6] == playerSymbol && board[7] == playerSymbol && board[8] == playerSymbol)
-        // vertical lines
-        || (board[0] == playerSymbol && board[3] == playerSymbol && board[6] == playerSymbol)
-        || (board[1] == playerSymbol && board[4] == playerSymbol && board[7] == playerSymbol)
-        || (board[2] == playerSymbol && board[5] == playerSymbol && board[8] == playerSymbol)
-        // diagonal lines
-        || (board[0] == playerSymbol && board[4] == playerSymbol && board[8] == playerSymbol)
-        || (board[2] == playerSymbol && board[4] == playerSymbol && board[6] == playerSymbol)
-        )
-        return true;
-
-    return false;
 }
 
 // END : private functions
@@ -90,19 +73,19 @@ void MainWindow::on_start_clicked()
     this->ui->stacked->setCurrentIndex(1);
 
     const bool humanPlaysFirst = this->ui->playFirst->isChecked();
-    this->player1 = new Player('X', true, this->ui->horizontalSlider->value()+1);
-    this->player2 = new Player('O', false, this->ui->horizontalSlider->value()+1);
+    this->player1 = new Player(Board::Symbol::PlayerX, true);
+    this->player2 = new Player(Board::Symbol::PlayerO, false);
     this->currentPlayer = humanPlaysFirst
         ? player1
         : player2;
 
     // SETUP BOARD
-    std::fill_n(this->boardStates, sizeof(this->boardStates), ' ');
-    updateBoardDisplay(this->boardStates, this->currentPlayer->manualPlayer);
+    this->board = Board(this->ui->horizontalSlider->value()+1);
+    updateBoardDisplay();
 
     // START FIRST MOVE
     QObject::connect(currentPlayer, &Player::moveReady, this, &MainWindow::handlePlayerMove);
-    currentPlayer->startNextMove(boardStates);
+    currentPlayer->startNextMove(board);
 }
 
 void MainWindow::on_restartButton_clicked()
@@ -111,14 +94,15 @@ void MainWindow::on_restartButton_clicked()
     this->ui->stacked->setCurrentIndex(0);
 }
 
-void MainWindow::manualMoveClicked(uint move)
+void MainWindow::manualMoveClicked(Board::Location location)
 {
-    currentPlayer->receiveManualMove(move);
+    currentPlayer->receiveManualMove(location);
 }
 
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     this->ui->difficulty->setNum(value+1);
+    this->board.difficulty = value+1;
 }
 
 // END: UI slots -------------
