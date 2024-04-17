@@ -11,6 +11,8 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+// Tic tac toe game UI with settings first page and board display second page
+// Uses the board and player logic, to refresh the UI when game state changes
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -20,7 +22,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void handlePlayerMove(Board::Location location);
+    void HandlePlayerMove(Board::Location location);
 
 private slots:
     void on_horizontalSlider_valueChanged(int value);
@@ -29,7 +31,7 @@ private slots:
 
     void on_restartButton_clicked();
 
-    void on_map1_clicked() { manualMoveClicked(Board::Location::TopLeft); }; // TODO do this in code by connecting signals
+    void on_map1_clicked() { manualMoveClicked(Board::Location::TopLeft); };
     void on_map2_clicked() { manualMoveClicked(Board::Location::TopMiddle); };
     void on_map3_clicked() { manualMoveClicked(Board::Location::TopRight); };
     void on_map4_clicked() { manualMoveClicked(Board::Location::MiddleLeft); };
@@ -48,8 +50,8 @@ private:
     Board board = Board();
 
     void manualMoveClicked(Board::Location location);
-    // updates the board and the window title depending on current state and player
-    void updateBoardDisplay();
+
+    void updateDisplay();
 
 private:
     Ui::MainWindow *ui;

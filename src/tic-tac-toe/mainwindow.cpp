@@ -15,7 +15,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::handlePlayerMove(Board::Location location)
+void MainWindow::HandlePlayerMove(Board::Location location)
 {
     disconnect(currentPlayer, nullptr, this, nullptr); // disconnect further calls from current player as they have made their move
     qDebug() << "Handle move :" << (int)location;
@@ -28,7 +28,7 @@ void MainWindow::handlePlayerMove(Board::Location location)
     else if(this->board.GetFreeCells().empty())
         endMessage = "It's a tie !";
     if(!endMessage.isEmpty()){
-        updateBoardDisplay();
+        updateDisplay();
         this->setWindowTitle(endMessage);
         return; // user must now reset game
     }
@@ -36,15 +36,15 @@ void MainWindow::handlePlayerMove(Board::Location location)
     this->currentPlayer = currentPlayer == player1
                             ? player2
                             : player1;
-    updateBoardDisplay();
+    updateDisplay();
 
-    QObject::connect(currentPlayer, &Player::moveReady, this, &MainWindow::handlePlayerMove);
-    currentPlayer->startNextMove(this->board);
+    QObject::connect(currentPlayer, &Player::MoveReady, this, &MainWindow::HandlePlayerMove);
+    currentPlayer->StartNextMove(this->board);
 }
 
 // ------------------------------
 // BEGIN : private functions
-void MainWindow::updateBoardDisplay()
+void MainWindow::updateDisplay()
 {
     ui->map1->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::TopLeft))));
     ui->map2->setText(QString(static_cast<char>(this->board.GetSymbolInCell(Board::Location::TopMiddle))));
@@ -83,11 +83,11 @@ void MainWindow::on_start_clicked()
 
     // SETUP UI BOARD
     this->board = Board(this->ui->horizontalSlider->value()+1);
-    updateBoardDisplay();
+    updateDisplay();
 
     // START FIRST MOVE
-    QObject::connect(currentPlayer, &Player::moveReady, this, &MainWindow::handlePlayerMove);
-    currentPlayer->startNextMove(board);
+    QObject::connect(currentPlayer, &Player::MoveReady, this, &MainWindow::HandlePlayerMove);
+    currentPlayer->StartNextMove(board);
 }
 
 void MainWindow::on_restartButton_clicked()
@@ -97,7 +97,7 @@ void MainWindow::on_restartButton_clicked()
 
 void MainWindow::manualMoveClicked(Board::Location location)
 {
-    currentPlayer->receiveManualMove(location);
+    currentPlayer->ReceiveManualMove(location);
 }
 
 void MainWindow::on_horizontalSlider_valueChanged(int value)
