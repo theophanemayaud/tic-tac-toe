@@ -22,13 +22,14 @@ void MainWindow::handlePlayerMove(Board::Location location)
 
     this->board.AddMove(location, this->currentPlayer->moveSymbol);
 
-    if(this->board.HasWon(currentPlayer->moveSymbol)){
+    QString endMessage;
+    if(this->board.HasWon(currentPlayer->moveSymbol))
+        endMessage = this->currentPlayer->manualPlayer ? "You won !" : "You lost...";
+    else if(this->board.GetFreeCells().empty())
+        endMessage = "It's a tie !";
+    if(!endMessage.isEmpty()){
         updateBoardDisplay();
-        this->setWindowTitle(
-            this->currentPlayer->manualPlayer
-                ? "You won !"
-                : "You lost..."
-            );
+        this->setWindowTitle(endMessage);
         return; // user must now reset game
     }
 
