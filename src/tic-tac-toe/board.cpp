@@ -1,17 +1,6 @@
 #include "board.h"
 
 Board::Board(uint difficulty) :
-    board {
-        Symbol::NoPlayer,
-        Symbol::NoPlayer,
-        Symbol::NoPlayer,
-        Symbol::NoPlayer,
-        Symbol::NoPlayer,
-        Symbol::NoPlayer,
-        Symbol::NoPlayer,
-        Symbol::NoPlayer,
-        Symbol::NoPlayer
-    },
     difficulty(difficulty)
 {
     for (int i = 0; i < NUMBER_OF_CELLS; ++i) {

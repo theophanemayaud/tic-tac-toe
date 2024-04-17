@@ -57,8 +57,8 @@ void MainWindow::updateBoardDisplay()
 
     this->setWindowTitle(
         this->currentPlayer->manualPlayer
-            ? "Your move !"
-            : "Computer is thinking..."
+            ? "Your move ! (You play " + QString(static_cast<char>(this->currentPlayer->moveSymbol)) + ")"
+            : "Computer is thinking... (Computer plays " + QString(static_cast<char>(this->currentPlayer->moveSymbol)) + ")"
         );
 }
 
@@ -73,13 +73,14 @@ void MainWindow::on_start_clicked()
     this->ui->stacked->setCurrentIndex(1);
 
     const bool humanPlaysFirst = this->ui->playFirst->isChecked();
+
     this->player1 = new Player(Board::Symbol::PlayerX, true);
     this->player2 = new Player(Board::Symbol::PlayerO, false);
     this->currentPlayer = humanPlaysFirst
         ? player1
         : player2;
 
-    // SETUP BOARD
+    // SETUP UI BOARD
     this->board = Board(this->ui->horizontalSlider->value()+1);
     updateBoardDisplay();
 
@@ -90,7 +91,6 @@ void MainWindow::on_start_clicked()
 
 void MainWindow::on_restartButton_clicked()
 {
-    // TODO free players
     this->ui->stacked->setCurrentIndex(0);
 }
 
@@ -107,4 +107,3 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
 
 // END: UI slots -------------
 // ---------------
-

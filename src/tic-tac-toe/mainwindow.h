@@ -40,12 +40,10 @@ private slots:
     void on_map9_clicked() { manualMoveClicked(Board::Location::BottomRight); };
 
 private:
-    Player *player1;
-    char player1Symbol = 'X';
-    Player *player2;
-    char player2Symbol = 'O';
+    Player* player1;
+    Player* player2;
 
-    Player *currentPlayer;
+    Player* currentPlayer;
 
     Board board = Board();
 

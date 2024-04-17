@@ -23,13 +23,13 @@ public:
     void receiveManualMove(Board::Location location); // receive moves from the human user
 
 private:
-    static const int WIN_GAIN = 10;
+    static const int WIN_GAIN = 15;
     bool awaitingMove = false;
 
-    Board board; // TODO refactor as separate class
+    Board board;
 
     Board::Location getBotMove() const;
-    static int getGainOfMove(Board board, Board::Location moveLoc, Board::Symbol moveSymbol, bool maximize = true);
+    static int getGainOfMove(Board board, Board::Location moveLoc, Board::Symbol moveSymbol, bool maximize);
 };
 
 #endif // PLAYER_H
