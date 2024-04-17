@@ -1,4 +1,5 @@
 #include "player.h"
+#include "QtCore/qdebug.h"
 
 #include <QTimer>
 #include <QRandomGenerator>
@@ -31,7 +32,7 @@ uint Player::getBotMove() const
     std::multimap<int, uint> gainOfPossibleMoves;
     for (uint i = 0; i < 9; ++i) { // TODO Refactor board as class to avoid 9 magic number
         if(board[i] == ' '){
-            gainOfPossibleMoves.insert({10, i});
+            gainOfPossibleMoves.insert({WIN_GAIN, i});
         }
     }
 
@@ -53,8 +54,27 @@ uint Player::getBotMove() const
         auto possibleRandomMove = gainOfPossibleMoves.cbegin();
         std::advance(possibleRandomMove, QRandomGenerator::global()->bounded((uint)1,(uint)(gainOfPossibleMoves.size()-1)));
         chosenMove = possibleRandomMove->second;
+        qDebug() << "Performed random move";
     }
 
     return chosenMove;
 }
+
+int Player::getGainOfMove(Board board, Board::Location moveLoc, Board::Symbol moveSymbol, bool maximize)
+{
+    board.AddMove(moveLoc, moveSymbol);
+    if(board.HasWon(moveSymbol))
+        return WIN_GAIN;
+
+    if(maximize) {
+        for (auto cell : board.cells()) {
+
+        }
+        return WIN_GAIN;
+    }
+    else {
+        return WIN_GAIN;
+    }
+}
+
 
