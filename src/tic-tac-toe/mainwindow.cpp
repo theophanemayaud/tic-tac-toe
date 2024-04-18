@@ -75,6 +75,7 @@ void MainWindow::on_start_clicked()
 
     const bool humanPlaysFirst = this->ui->playFirst->isChecked();
 
+    delete this->player1; delete this->player2;
     this->player1 = new Player(Board::Symbol::PlayerX, true);
     this->player2 = new Player(Board::Symbol::PlayerO, false);
     this->currentPlayer = humanPlaysFirst
