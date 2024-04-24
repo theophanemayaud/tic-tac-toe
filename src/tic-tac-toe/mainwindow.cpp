@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete this->player1; delete this->player2;
 }
 
 void MainWindow::HandlePlayerMove(Board::Location location)

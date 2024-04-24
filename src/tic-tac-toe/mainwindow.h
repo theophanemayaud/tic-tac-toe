@@ -42,8 +42,8 @@ private slots:
     void on_map9_clicked() { manualMoveClicked(Board::Location::BottomRight); };
 
 private:
-    Player* player1;
-    Player* player2;
+    Player* player1 = nullptr;
+    Player* player2 = nullptr;
 
     Player* currentPlayer;
 
